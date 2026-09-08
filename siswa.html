@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Siswa — MatematikaPakADe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF8F2; --paper-dim:#F2EDE0; --ink:#1F2A44; --ink-soft:#55607A; --ink-faint:#8A93AA;
+    --teal:#2C7A6B; --teal-dark:#1D5A4F; --teal-pale:#E3F0EC;
+    --amber:#D68A2E; --amber-pale:#FBEDD8; --rose:#C4574F; --rose-pale:#F8E7E5;
+    --violet:#6B5CA5; --violet-pale:#EAE6F5;
+    --line:rgba(31,42,68,0.12); --grid:rgba(31,42,68,0.065);
+    --radius:14px; --shadow:0 2px 10px rgba(31,42,68,0.06), 0 1px 2px rgba(31,42,68,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      var(--paper);
+    color:var(--ink); font-family:'Inter', system-ui, sans-serif; line-height:1.6;
+  }
+  h1,h2,h3{font-family:'Fraunces', Georgia, serif; font-weight:600; margin:0 0 .4em;}
+  a{color:var(--teal-dark);}
+  header.topbar{position:sticky; top:0; z-index:40; background:rgba(251,248,242,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  .topbar-inner{max-width:960px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+  .brand{font-family:'Fraunces', serif; font-weight:700; font-size:1.15rem; text-decoration:none; color:var(--ink);}
+  .brand .pak{color:var(--teal-dark);} .brand .de{color:var(--amber);}
+  .who{display:flex; align-items:center; gap:10px; font-size:.86rem; color:var(--ink-soft);}
+  .who strong{color:var(--ink);}
+  .btn{font-family:'Inter'; font-weight:600; font-size:.86rem; padding:9px 16px; border-radius:999px; border:1.5px solid var(--line); background:#fff; color:var(--ink); cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px;}
+  .btn:hover{border-color:var(--ink-soft);}
+  .btn-primary{background:var(--teal); color:#fff; border-color:var(--teal);}
+  .btn-primary:hover{background:var(--teal-dark); border-color:var(--teal-dark);}
+  .btn-rose{background:var(--rose); color:#fff; border-color:var(--rose);}
+
+  main{max-width:960px; margin:0 auto; padding:32px 24px 80px;}
+
+  /* Login */
+  .login-wrap{max-width:420px; margin:60px auto; text-align:center;}
+  .login-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:32px 28px; box-shadow:var(--shadow); text-align:left;}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:.85rem; font-weight:600; margin-bottom:6px; color:var(--ink-soft);}
+  .field input, .field select{width:100%; padding:11px 14px; border:1px solid var(--line); border-radius:9px; font-size:.95rem; font-family:inherit;}
+  .field input:focus, .field select:focus{outline:2px solid var(--teal); border-color:var(--teal);}
+
+  /* Tabs */
+  nav.tabs{display:flex; gap:6px; margin-bottom:28px; border-bottom:1px solid var(--line); overflow-x:auto;}
+  nav.tabs button{font-family:'Inter'; font-size:.92rem; font-weight:600; color:var(--ink-soft); background:none; border:none; padding:10px 16px; cursor:pointer; border-bottom:2.5px solid transparent; white-space:nowrap;}
+  nav.tabs button.active{color:var(--teal-dark); border-color:var(--teal);}
+  section.tabpage{display:none;}
+  section.tabpage.active{display:block;}
+
+  .grid-cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px;}
+  .materi-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .materi-card h3{font-size:1.02rem; margin-bottom:6px;}
+  .materi-card p{color:var(--ink-soft); font-size:.88rem; margin:0 0 12px;}
+
+  .test-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow); margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .test-card h3{font-size:1.05rem; margin-bottom:4px;}
+  .test-meta{font-family:'JetBrains Mono', monospace; font-size:.78rem; color:var(--ink-soft);}
+  .empty{color:var(--ink-faint); font-size:.92rem; padding:20px 0;}
+
+  table{width:100%; border-collapse:collapse; background:#fff; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);}
+  th, td{text-align:left; padding:12px 14px; font-size:.9rem; border-bottom:1px solid var(--line);}
+  th{background:var(--paper-dim); font-family:'JetBrains Mono', monospace; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Exam */
+  .exam-bar{position:sticky; top:64px; z-index:30; background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; box-shadow:var(--shadow);}
+  .timer{font-family:'JetBrains Mono', monospace; font-weight:700; font-size:1.1rem; color:var(--rose);}
+  .qcard{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin-bottom:14px; box-shadow:var(--shadow);}
+  .qcard .qtop{display:flex; gap:10px; align-items:baseline; margin-bottom:10px;}
+  .qnum{font-family:'JetBrains Mono', monospace; font-weight:600; color:var(--teal-dark); font-size:.88rem;}
+  .qtopic{font-family:'JetBrains Mono', monospace; font-size:.68rem; text-transform:uppercase; background:var(--teal-pale); color:var(--teal-dark); padding:3px 9px; border-radius:999px;}
+  .qtext{font-weight:500; margin-bottom:12px;}
+  .options label{display:flex; gap:10px; padding:10px 14px; border:1px solid var(--line); border-radius:9px; cursor:pointer; margin-bottom:8px;}
+  .options label:hover{background:var(--paper-dim);}
+  .options label.correct{border-color:var(--teal); background:var(--teal-pale);}
+  .options label.incorrect{border-color:var(--rose); background:var(--rose-pale);}
+  .explain{display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); font-size:.9rem; color:var(--ink-soft);}
+  .qcard.checked .explain{display:block;}
+
+  .result-box{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:30px; text-align:center; box-shadow:var(--shadow); margin-bottom:24px;}
+  .result-box .score{font-family:'Fraunces', serif; font-size:2.6rem; color:var(--teal-dark); margin:8px 0;}
+
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="pak">Matematika</span><span class="de">PakADe</span></a>
+    <div class="who" id="whoBox" hidden>
+      Masuk sebagai <strong id="whoName"></strong> · <span id="whoClass"></span>
+      <button class="btn" id="logoutBtn">Keluar</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===== LOGIN ===== -->
+  <div class="login-wrap" id="loginView">
+    <h1 style="font-size:1.6rem;">Masuk sebagai Siswa</h1>
+    <p style="color:var(--ink-soft); margin-bottom:24px;">Isi nama dan kelasmu untuk mulai belajar dan mengerjakan ujian. Tidak perlu kata sandi.</p>
+    <div class="login-card">
+      <div class="field">
+        <label for="inpNama">Nama Lengkap</label>
+        <input type="text" id="inpNama" placeholder="Misal: Ayu Lestari">
+      </div>
+      <div class="field">
+        <label for="inpKelas">Kelas</label>
+        <input type="text" id="inpKelas" placeholder="Misal: X IPA 2">
+      </div>
+      <button class="btn btn-primary" style="width:100%; justify-content:center;" id="loginBtn">Masuk</button>
+      <p id="loginError" style="color:var(--rose); font-size:.85rem; margin-top:10px;" hidden>Nama dan kelas wajib diisi.</p>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="dashView" hidden>
+    <nav class="tabs">
+      <button data-tab="materi" class="active">Materi (LMS)</button>
+      <button data-tab="ujian">Ujian (CBT)</button>
+      <button data-tab="riwayat">Riwayat Nilai</button>
+    </nav>
+
+    <!-- Materi -->
+    <section class="tabpage active" data-tabpage="materi">
+      <h2 style="font-size:1.3rem;">Materi Geometri</h2>
+      <p style="color:var(--ink-soft); margin-top:-6px;">Materi lengkap (ringkasan hukum/rumus, contoh soal, dan latihan) tersedia di situs materi MatematikaPakADe Geometri. Klik topik untuk membukanya di tab baru.</p>
+      <div class="grid-cards" style="margin-top:18px;">
+        <div class="materi-card">
+          <h3>Garis, Sudut &amp; Segitiga</h3>
+          <p>Jenis sudut, garis sejajar, Ceva, Menelaus, kekongruenan &amp; kesebangunan.</p>
+          <a class="btn" href="matematikapakade-geometri.html#garis-sudut" target="_blank">Buka materi →</a>
+        </div>
+        <div class="materi-card">
+          <h3>Lingkaran</h3>
+          <p>Sudut pusat &amp; keliling, segiempat tali busur, garis singgung, power of a point.</p>
+          <a class="btn" href="matematikapakade-geometri.html#lingkaran" target="_blank">Buka materi →</a>
+        </div>
+        <div class="materi-card">
+          <h3>Bangun Datar</h3>
+          <p>Luas segitiga &amp; segiempat, aturan sinus &amp; kosinus, dalil Ptolemy.</p>
+          <a class="btn" href="matematikapakade-geometri.html#bangun-datar" target="_blank">Buka materi →</a>
+        </div>
+        <div class="materi-card">
+          <h3>Vektor &amp; Transformasi</h3>
+          <p>Operasi vektor, dot product, translasi, refleksi, rotasi, dilatasi.</p>
+          <a class="btn" href="matematikapakade-geometri.html#vektor-transformasi" target="_blank">Buka materi →</a>
+        </div>
+        <div class="materi-card">
+          <h3>Dimensi Tiga</h3>
+          <p>Jarak titik, garis, bidang pada kubus, balok, dan prisma.</p>
+          <a class="btn" href="matematikapakade-geometri.html#dimensi-tiga" target="_blank">Buka materi →</a>
+        </div>
+        <div class="materi-card">
+          <h3>Bank Soal Lengkap</h3>
+          <p>Bank Soal Gaya KSN dan Soal OSN/KSN 2020–2026 (39 soal + pembahasan).</p>
+          <a class="btn" href="matematikapakade-geometri.html#banksoal" target="_blank">Buka bank soal →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ujian -->
+    <section class="tabpage" data-tabpage="ujian">
+      <h2 style="font-size:1.3rem;">Ujian Tersedia</h2>
+      <div id="testList"></div>
+    </section>
+
+    <!-- Ujian sedang berlangsung -->
+    <section class="tabpage" data-tabpage="exam">
+      <div class="exam-bar">
+        <div>
+          <div style="font-weight:700;" id="examTitle"></div>
+          <div class="test-meta" id="examMeta"></div>
+        </div>
+        <div class="timer" id="examTimer">--:--</div>
+      </div>
+      <div id="examQuestions"></div>
+      <button class="btn btn-primary" id="submitExamBtn" style="width:100%; justify-content:center; padding:14px;">Selesai &amp; Kumpulkan</button>
+    </section>
+
+    <!-- Hasil setelah submit -->
+    <section class="tabpage" data-tabpage="hasil">
+      <div class="result-box">
+        <div style="color:var(--ink-soft); font-family:'JetBrains Mono', monospace; font-size:.85rem; text-transform:uppercase; letter-spacing:.06em;">Skor Kamu</div>
+        <div class="score" id="finalScore">0 / 0</div>
+        <div id="finalTestTitle" style="color:var(--ink-soft);"></div>
+        <button class="btn" style="margin-top:16px;" id="backToListBtn">Kembali ke Daftar Ujian</button>
+      </div>
+      <h3 style="font-size:1.1rem;">Pembahasan</h3>
+      <div id="reviewQuestions"></div>
+    </section>
+
+    <!-- Riwayat -->
+    <section class="tabpage" data-tabpage="riwayat">
+      <h2 style="font-size:1.3rem;">Riwayat Nilai</h2>
+      <div id="historyTable"></div>
+    </section>
+  </div>
+</main>
+
+<script src="db.js"></script>
+<script src="questions.js"></script>
+<script>
+  let currentTest = null;
+  let currentAnswers = {};
+  let timerInterval = null;
+  let timeLeftSec = 0;
+  let lastResult = null;
+
+  const loginView = document.getElementById('loginView');
+  const dashView = document.getElementById('dashView');
+  const whoBox = document.getElementById('whoBox');
+
+  function showTab(name) {
+    document.querySelectorAll('.tabpage').forEach(p => p.classList.toggle('active', p.dataset.tabpage === name));
+    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  }
+  document.querySelectorAll('nav.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => { showTab(btn.dataset.tab); if (btn.dataset.tab === 'ujian') loadTests(); if (btn.dataset.tab === 'riwayat') loadHistory(); });
+  });
+
+  async function init() {
+    const student = DB.currentStudent();
+    if (student) {
+      loginView.hidden = true;
+      dashView.hidden = false;
+      whoBox.hidden = false;
+      document.getElementById('whoName').textContent = student.nama;
+      document.getElementById('whoClass').textContent = student.kelas;
+      loadTests();
+    }
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const nama = document.getElementById('inpNama').value.trim();
+    const kelas = document.getElementById('inpKelas').value.trim();
+    if (!nama || !kelas) { document.getElementById('loginError').hidden = false; return; }
+    document.getElementById('loginError').hidden = true;
+    await DB.registerStudent(nama, kelas);
+    init();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    DB.studentLogout();
+    location.reload();
+  });
+
+  async function loadTests() {
+    const tests = await DB.getPublishedTests();
+    const el = document.getElementById('testList');
+    if (!tests.length) {
+      el.innerHTML = '<p class="empty">Belum ada ujian yang diterbitkan guru. Cek lagi nanti.</p>';
+      return;
+    }
+    el.innerHTML = tests.map(t => `
+      <div class="test-card">
+        <div>
+          <h3>${escapeHtml(t.title)}</h3>
+          <div class="test-meta">${t.questionIds.length} soal · ${t.duration} menit</div>
+        </div>
+        <button class="btn btn-primary" onclick="startExam('${t.id}')">Mulai Ujian →</button>
+      </div>
+    `).join('');
+  }
+
+  window.startExam = async function (testId) {
+    const test = await DB.getTestById(testId);
+    if (!test) return;
+    currentTest = test;
+    currentAnswers = {};
+    document.getElementById('examTitle').textContent = test.title;
+    document.getElementById('examMeta').textContent = test.questionIds.length + ' soal · batas waktu ' + test.duration + ' menit';
+
+    const questions = test.questionIds.map(id => QUESTION_BANK.find(q => q.id === id)).filter(Boolean);
+    document.getElementById('examQuestions').innerHTML = questions.map((q, i) => `
+      <div class="qcard">
+        <div class="qtop"><span class="qnum">Soal ${i + 1}</span><span class="qtopic">${escapeHtml(q.topic)}</span></div>
+        <div class="qtext">${escapeHtml(q.text)}</div>
+        <div class="options">
+          ${q.options.map((opt, oi) => `
+            <label><input type="radio" name="ex_${q.id}" value="${oi}" onchange="currentAnswers['${q.id}']=${oi}"><span>${escapeHtml(opt)}</span></label>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    timeLeftSec = test.duration * 60;
+    updateTimerDisplay();
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timeLeftSec--;
+      updateTimerDisplay();
+      if (timeLeftSec <= 0) { clearInterval(timerInterval); submitExam(true); }
+    }, 1000);
+
+    showTab('exam');
+  };
+
+  function updateTimerDisplay() {
+    const m = Math.max(0, Math.floor(timeLeftSec / 60));
+    const s = Math.max(0, timeLeftSec % 60);
+    document.getElementById('examTimer').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  document.getElementById('submitExamBtn').addEventListener('click', () => submitExam(false));
+
+  async function submitExam(auto) {
+    clearInterval(timerInterval);
+    const questions = currentTest.questionIds.map(id => QUESTION_BANK.find(q => q.id === id)).filter(Boolean);
+    let correct = 0;
+    const answerDetail = questions.map(q => {
+      const chosen = currentAnswers[q.id];
+      const isCorrect = chosen === q.correct;
+      if (isCorrect) correct++;
+      return { id: q.id, chosen: chosen ?? null, correct: q.correct, isCorrect };
+    });
+
+    const student = DB.currentStudent();
+    const result = await DB.saveResult({
+      testId: currentTest.id,
+      testTitle: currentTest.title,
+      studentId: student.id,
+      studentName: student.nama,
+      studentClass: student.kelas,
+      score: correct,
+      total: questions.length,
+      auto: !!auto,
+      answers: answerDetail,
+    });
+    lastResult = result;
+
+    document.getElementById('finalScore').textContent = correct + ' / ' + questions.length;
+    document.getElementById('finalTestTitle').textContent = currentTest.title + (auto ? ' (waktu habis, otomatis dikumpulkan)' : '');
+
+    document.getElementById('reviewQuestions').innerHTML = questions.map((q, i) => {
+      const det = answerDetail[i];
+      return `
+      <div class="qcard checked">
+        <div class="qtop"><span class="qnum">Soal ${i + 1}</span><span class="qtopic">${escapeHtml(q.topic)}</span></div>
+        <div class="qtext">${escapeHtml(q.text)}</div>
+        <div class="options">
+          ${q.options.map((opt, oi) => {
+            let cls = '';
+            if (oi === q.correct) cls = 'correct';
+            else if (oi === det.chosen) cls = 'incorrect';
+            return `<label class="${cls}"><span>${escapeHtml(opt)}</span></label>`;
+          }).join('')}
+        </div>
+        <div class="explain">${escapeHtml(q.explain)}</div>
+      </div>`;
+    }).join('');
+
+    showTab('hasil');
+  }
+
+  document.getElementById('backToListBtn').addEventListener('click', () => { showTab('ujian'); loadTests(); });
+
+  async function loadHistory() {
+    const student = DB.currentStudent();
+    const results = await DB.getResultsForStudent(student.id);
+    const el = document.getElementById('historyTable');
+    if (!results.length) {
+      el.innerHTML = '<p class="empty">Belum ada riwayat ujian.</p>';
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Ujian</th><th>Skor</th><th>Tanggal</th></tr></thead><tbody>
+      ${results.map(r => `<tr><td>${escapeHtml(r.testTitle)}</td><td>${r.score} / ${r.total}</td><td>${new Date(r.submittedAt).toLocaleString('id-ID')}</td></tr>`).join('')}
+    </tbody></table>`;
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  init();
+</script>
+</body>
+</html>
